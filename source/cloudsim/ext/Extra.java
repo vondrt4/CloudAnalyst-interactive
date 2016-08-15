@@ -12,10 +12,11 @@ public class Extra {
 	public Extra() {
 		super();
 		
-		load= new double[2][250];
-		for (int i=0;i<250;i++){
-			load[0][i] = i* Constants.MILLI_SECONDS_TO_HOURS;
-			load[1][i]=1012;
+		load= new double[2][25];
+		for (int i=0;i<25;i++){
+			load[0][i] = i*Constants.MILLI_SECONDS_TO_HOURS;
+			load[1][i] = 1082;
+			//original values:32 and 1012
 		}
 /*
 		load[1][0]=1000;

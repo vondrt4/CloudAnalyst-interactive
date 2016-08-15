@@ -126,13 +126,17 @@ public class UserBase extends CloudSim implements GeoLocatable {
 		
 		while (Sim_system.running() && !cancelled){
 			currTime = GridSim.clock();
-			
+/*Wondra fire each request separately		
 			userCountForRequest = getOnlineUsers(currTime);
 			requestGroups = getCurrUserCountInGroups(userCountForRequest);
 			
 			for (int i = 0; i < requestGroups; i++){
+*/
+				//Wondra randomize cloudlet length to get Markovian service times
+				int tempInstructionLength = (int) (instructionLengthPerRequest * userCountDistribution.sample() / STANDARD_POISSON_DIST_MEAN);
+			
 				cloudlet = new InternetCloudlet(get_id() * 100000 + ++id, //Id need not be unique, just used for debugging
-												 instructionLengthPerRequest, 
+												 tempInstructionLength, 
 												 perRequestDataSize, 
 												 output_size, 
 												 this, 
@@ -148,7 +152,7 @@ public class UserBase extends CloudSim implements GeoLocatable {
 				
 				//System.out.println(currTime + ": userbase " + get_name() + " sent message " 
 				//		+ cloudlet.getCloudletId() + " to internet with " + userGroupingFactor);
-			}
+/*Wondra	}
 			
 			remainingUsers = userCountForRequest - (userGroupingFactor * requestGroups);
 			if (remainingUsers > 0){
@@ -171,7 +175,7 @@ public class UserBase extends CloudSim implements GeoLocatable {
 				//				+ cloudlet.getCloudletId() + " to internet with " + remainingUsers);
 			}			
 
-			
+*/			
 			sim_pause(getInterRequestDelay());
 
 		}
@@ -181,7 +185,8 @@ public class UserBase extends CloudSim implements GeoLocatable {
 	}
 
 	private long getInterRequestDelay(){
-		long avgReqDelay = 3600000 / requestsPerUserPerHour; //ms
+		//Wondra fire each request separately
+		long avgReqDelay = 3600000 / requestsPerUserPerHour / getOnlineUsers(GridSim.clock()); //ms
 		return (avgReqDelay * requestDelayDistribution.sample() / STANDARD_POISSON_DIST_MEAN );
 	}
 	
@@ -202,7 +207,7 @@ public class UserBase extends CloudSim implements GeoLocatable {
 		for (int i=0;i<24;i++){
 			if(time<aux[0][i]){
 				avgUsers=(int)aux[1][i];
-				return (int)(avgUsers * userCountDistribution.sample() / STANDARD_POISSON_DIST_MEAN);
+				return (int)(avgUsers) /* * userCountDistribution.sample() / STANDARD_POISSON_DIST_MEAN)*/;
 			}
 		}
 		

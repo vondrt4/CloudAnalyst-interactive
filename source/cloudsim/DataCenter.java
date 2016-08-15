@@ -753,11 +753,9 @@ public class DataCenter extends CloudSim {
             Host host = vmprovisioner.getHost(vmId,userId);
             VirtualMachine vm = host.getVM(userId, vmId);
             VMScheduler scheduler = vm.getVMScheduler();
-            double capacity = scheduler.cloudletSubmit(cl,fileTransferTime);
+            double estimatedFinishTime = scheduler.cloudletSubmit(cl,fileTransferTime);
             
-            if(capacity>0.0){//if this gridlet is in the exec queue
-            	double estimatedFinishTime = (cl.getGridletLength()/(capacity*cl.getNumPE())); //time to process the gridlet
-            	//System.out.println(estimatedFinishTime+"="+gl.getGridletLength()+"/("+capacity+"*"+gl.getNumPE()+")");
+            if(estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)){//if this gridlet is in the exec queue
             	estimatedFinishTime+=fileTransferTime;
             	//System.out.println(GridSim.clock()+": Next event set to "+estimatedFinishTime);
             	super.send(this.get_id(),estimatedFinishTime,DatacenterTags.VM_DATACENTER_EVENT);
@@ -912,7 +910,7 @@ public class DataCenter extends CloudSim {
 			}
 			
 			//schedules an event to the next time, if valid
-			if (smallerTime>GridSim.clock()+0.01 && smallerTime!=Double.MAX_VALUE) {
+			if (smallerTime>GridSim.clock()+0.1 && smallerTime!=Double.MAX_VALUE) {
 				super.sim_schedule(this.get_id(),smallerTime-GridSim.clock(),DatacenterTags.VM_DATACENTER_EVENT);
 			}
 			this.lastProcessTime=GridSim.clock();

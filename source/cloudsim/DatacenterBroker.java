@@ -119,7 +119,7 @@ public class DatacenterBroker extends CloudSim {
 
 		for (int i = 0; i < number; i++) {
 			VirtualMachine aux = new VirtualMachine(new VMCharacteristics(actual+i, 6, size,
-					memory, bw, vcpus, priority, vmm, new TimeSharedVMScheduler()));
+					memory, bw, vcpus, priority, vmm, new CloudletSchedulerFIFO()));
 			vmlist.add(aux);
 		}
 

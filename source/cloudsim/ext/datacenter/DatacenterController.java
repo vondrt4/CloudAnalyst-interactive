@@ -152,16 +152,16 @@ public class DatacenterController extends DatacenterBroker implements GeoLocatab
 
 
 //Wondra measure latency and throughput every 5 minutes to support the autoscaler.
-		int totalMeasures=24*20;//each 5 mins, using 24 hours
+		int totalMeasures=2*20;//each 5 mins, using 2 hours
 		double granularity=5.0/60.0; //also 5 minutes
 		int lastDeletedAt=0;
 /* Juan's ugly hack
-		//double[] measures=new double[totalMeasures];
-		//int[] checked= new int[totalMeasures];
-		//for (int i=0;i<totalMeasures;i++){
-		//	checked[i]=0;
-		//} */
-		
+		double[] measures=new double[totalMeasures];
+		int[] checked= new int[totalMeasures];
+		for (int i=0;i<totalMeasures;i++){
+			checked[i]=0;
+		} 
+*/		
 		int cont=0;
 		while(Sim_system.running()){
 			super.sim_get_next(ev);
@@ -169,27 +169,30 @@ public class DatacenterController extends DatacenterBroker implements GeoLocatab
 			double currTime = GridSim.clock();
 
 			if (cont%200==0){
-				System.out.print((int)(currTime/60000)+" m\n");
-			}
+				System.out.print((int)(currTime/60000)+" m ");
 			
+			    if (currTime>60000) System.out.print(
+					stat.average(DC_SERVICE_TIME, currTime-60000, currTime)+" ms avg/min "+
+					stat.count("Throughput", currTime-60000, currTime)+" reqs/min\n");
+			}	
 /* Juan's ugly hack
 			if(checked[(int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS))]==0){
 
 				
 				List res = stat.get_measures();
-				//int hora=0;
+				int hora=0;
 				for (Object o : res) {
 					Object[] oArray = (Object[]) o;
 					String measure = (String) oArray[0];
-					//DecimalFormat decimales = new DecimalFormat("0.0");
+					DecimalFormat decimales = new DecimalFormat("0.000");
 					if(stat.average(measure)!=0){
-						//System.out.print(hora+".00 - "+(hora+1)+".00 -> Average: "+decimales.format(stat.average(measure))+"\tMinimum: "+decimales.format(stat.minimum(measure))+"\tMaximum: "+decimales.format(stat.maximum(measure))+"\n");
+						System.out.print(hora+".00 - "+(hora+1)+".00 -> Average: "+decimales.format(stat.average(measure))+"\tMinimum: "+decimales.format(stat.minimum(measure))+"\tMaximum: "+decimales.format(stat.maximum(measure))+"\n");
 				        measures[(int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS))]=stat.average(measure);
+					    break;
 					}
-					//hora++;
-				//}
-			*/	
-			
+					hora++;
+				}	
+*/			
 //Juan's ugly hack - this is to add or remove VMs at certain time points
 				/*if (checked[50]==1&&checked[51]==0)
 					addVMs(10);
@@ -207,11 +210,11 @@ public class DatacenterController extends DatacenterBroker implements GeoLocatab
 				//double currThroughput=stat.count("Throughput", currTime-granularity*Constants.MILLI_SECONDS_TO_HOURS, currTime);
 				//double currUtilization=currLatency*currThroughput;
 				//thresholdFunction(measures, (int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS)));
-
-//Juan's ugly hack 
-				//checked[(int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS))]=1;
-			//}
-
+				
+/*Juan's ugly hack 
+				checked[(int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS))]=1;
+			}
+*/
 			// if the simulation finishes then exit the loop
 			if (ev.get_tag() == GridSimTags.END_OF_SIMULATION){
 				System.out.print("+++Ending message has arrived to DCcontroller+++");
@@ -335,7 +338,7 @@ public class DatacenterController extends DatacenterBroker implements GeoLocatab
 //Wondra mesure throughput to calculate utilization
 			stat.update("Throughput", endTime);
 			hourlyProcessingTimes.update(startTime, endTime);
-
+			//System.out.println(thisProcessingTime+" time recorded for cloudlet");
 			//System.out.println(endTime + ": DC processing time for " + parentRequest + "=" + thisProcessingTime + " in vm " + cl.getVmId() + " and current processingqueue=" + processingCloudletStatuses.size());
 
 			InternetCharacteristics.getInstance().updateSerivceLatency(get_name(), thisProcessingTime);

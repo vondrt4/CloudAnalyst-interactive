@@ -21,6 +21,8 @@ import javax.swing.JOptionPane;
 
 import cloudsim.Cloudlet;
 import cloudsim.CloudletList;
+import cloudsim.CloudletSchedulerFIFO;
+import cloudsim.CloudletSchedulerTimeShared;
 import cloudsim.DataCenter;
 import cloudsim.DatacenterCharacteristics;
 import cloudsim.Host;
@@ -28,6 +30,7 @@ import cloudsim.SimpleBWProvisioner;
 import cloudsim.SimpleMemoryProvisioner;
 import cloudsim.SimpleVMProvisioner;
 import cloudsim.SpaceSharedAllocationPolicy;
+import cloudsim.SpaceSharedVMScheduler;
 import cloudsim.TimeSharedAllocationPolicy;
 import cloudsim.TimeSharedVMScheduler;
 import cloudsim.TimeSharedWithPriorityAllocationPolicy;
@@ -333,7 +336,7 @@ public class Simulation extends BaseCloudSimObservable implements Constants {
 		for (int i = 0; i < vms; i++) {
 			vm[i] = new VirtualMachine(new VMCharacteristics(i, userID, size,
 					memory, bw, vcpus, priority, vmm,
-					new TimeSharedVMScheduler()));
+					new CloudletSchedulerFIFO()));
 			//for creating a VM with a space shared scheduling policy for cloudlets:
 			//vm[i] = new VirtualMachine(new VMCharacteristics(i,userID,size,memory,bw,vcpus,vmm,new SpaceSharedVMScheduler()));
 

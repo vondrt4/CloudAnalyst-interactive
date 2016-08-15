@@ -71,6 +71,7 @@ public class TimeSharedVMScheduler extends VMScheduler {
 		for(int i=0;i<mipsShare.length;i++){
 			capacity+=mipsShare[i];
 			if(mipsShare[i]>0)cpus++;
+			//System.out.println("- MIPSShare[i]:"+i+" "+mipsShare[i]);
 		}
 		currentCPUs=cpus;
 
@@ -82,7 +83,9 @@ public class TimeSharedVMScheduler extends VMScheduler {
 		}
 		
 		if(pesInUse>currentCPUs){
+			//System.out.println("- Capacity total:"+capacity);
 			capacity/=pesInUse;
+			//System.out.println("- Capacity per gridlet:"+capacity);
 		} else {
 			//System.out.println("- Capacity:"+capacity);
 			capacity/=currentCPUs;
@@ -113,7 +116,7 @@ public class TimeSharedVMScheduler extends VMScheduler {
                 continue;
             } else {//not finish: estimate the finish time
             	double estimatedFinishTime = currentTime+(remainingLength/(capacity*obj.getNumPE()));
-            	
+//Wondra - this line seems fishy to me. Gridlets consume capacity even after they are finished. Scheduling is later than needed.            	
             	if(estimatedFinishTime<nextEvent) {
             		nextEvent = estimatedFinishTime;
             	
