@@ -146,8 +146,11 @@ public class DataCenter extends CloudSim {
         while (Sim_system.running()){
             super.sim_get_next(ev);
             
+            
+            
             // if the simulation finishes then exit the loop
             if (ev.get_tag() == GridSimTags.END_OF_SIMULATION){
+            	System.out.print("+++Ending message has arrived to a DC+++");
             	break;
             }
 
@@ -496,7 +499,8 @@ public class DataCenter extends CloudSim {
  	       array[1] = description.getVmId();
            
            if(result) array[2] = GridSimTags.TRUE;
-           else array[2] = GridSimTags.FALSE;       
+           else array[2] = GridSimTags.FALSE;
+           //System.out.print("DC sends:\n");
 		   super.send(description.getUserId(),GridSimTags.SCHEDULE_NOW,DatacenterTags.VM_CREATE_ACK,array);
  	    }
  	    

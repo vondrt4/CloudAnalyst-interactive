@@ -3,6 +3,7 @@ package cloudsim.ext.gui.screens;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -266,7 +267,8 @@ public class ConfigureSimulationPanel extends JPanel
 		x = leftMargin; 
 		y += compH + vGap; 
 		compW = 70; 
-		JLabel lblUbHeading = new JLabel("User bases:");
+		JLabel lblUbHeading = new JLabel("User bases");
+		lblUbHeading.setFont(new Font("Serif", Font.PLAIN, 10));
 		lblUbHeading.setBounds(x, y, compW, compH);
 		mainTab.add(lblUbHeading);
 		
@@ -282,6 +284,7 @@ public class ConfigureSimulationPanel extends JPanel
 		compW = 80; 
 		compH = 60;
 		JLabel lblVmHeading = new JLabel("<html>Application<br/>Deployment<br/>Configuration:</html>");
+		lblVmHeading.setFont(new Font("Serif", Font.PLAIN, 12));
 		lblVmHeading.setBounds(x, y, compW, compH);
 		mainTab.add(lblVmHeading);
 		
@@ -374,6 +377,7 @@ public class ConfigureSimulationPanel extends JPanel
 		JLabel lblUserGroup = new JLabel("<html>User grouping factor in User Bases:" +
 										 "<br/>(Equivalent to number of simultaneous" +
 										 "<br/> users from a single user base)</html>");
+		lblUserGroup.setFont(new Font("Serif", Font.PLAIN, 12));
 		lblUserGroup.setBounds(x, y, compW, compH);
 		advancedTab.add(lblUserGroup);
 		
@@ -393,6 +397,7 @@ public class ConfigureSimulationPanel extends JPanel
 				                                  "<br/>(Equivalent to number of simultaneous" +
 				                                  "<br/> requests a single applicaiton server" +
 				                                  "<br/> instance can support.) </html>");
+		lblDcRequestGrouping.setFont(new Font("Serif", Font.PLAIN, 10));
 		lblDcRequestGrouping.setBounds(x, y, compW, compH);
 		advancedTab.add(lblDcRequestGrouping);
 		
@@ -410,13 +415,31 @@ public class ConfigureSimulationPanel extends JPanel
 		compH = 30;
 		JLabel lblInstructionLength = new JLabel("<html>Executable instruction length per request:" +
 				                                  "<br/>(bytes)</html>");
+		lblInstructionLength.setFont(new Font("Serif", Font.PLAIN, 10));
 		lblInstructionLength.setBounds(x, y, compW, compH);
 		advancedTab.add(lblInstructionLength);
 		
 		x += compW + vGap;
 		compW = 80;
 		compH = 20;
-		txtInstructionLength = new JTextField("" + simulation.getInstructionLengthPerRequest());
+		
+		
+		
+		
+		
+		
+		
+		txtInstructionLength = new JTextField("" + (simulation.getInstructionLengthPerRequest()*10));
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		txtInstructionLength.setBounds(x, y, compW, compH);
 		advancedTab.add(txtInstructionLength);
 		
@@ -426,6 +449,7 @@ public class ConfigureSimulationPanel extends JPanel
 		compH = 30;
 		JLabel lblLoadBalancing = new JLabel("<html>Load balancing policy<br/>" +
 				                                  "across VM's in a single Data Center:</html>");
+		lblLoadBalancing.setFont(new Font("Serif", Font.PLAIN, 12));
 		lblLoadBalancing.setBounds(x, y, compW, compH);
 		advancedTab.add(lblLoadBalancing);
 		

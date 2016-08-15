@@ -38,12 +38,15 @@ public class UserBase extends CloudSim implements GeoLocatable {
 	private int responsesReceived = 0;
 	private boolean cancelled = false;
 	private int requestsPerUserPerHour;
-	private double[] peakHours;
+	/*private double[] peakHours;
 	private int peakAvgUsers;
-	private int offPeakAvgUsers;
+	private int offPeakAvgUsers;*/
 	private long perRequestDataSize;
 	private int userGroupingFactor;
 	private Sim_stat stat;
+	
+	
+	
 	
 	/** 
 	 * Holds the id's of the requests that have been sent out, along with the request time, until
@@ -75,15 +78,15 @@ public class UserBase extends CloudSim implements GeoLocatable {
 		this.region = region;
 		this.instructionLengthPerRequest = instructionLengthPerRequest;
 		this.requestsPerUserPerHour = requestsPerUserPerHour;
-		this.peakAvgUsers = peakAvgUsers;
-		this.offPeakAvgUsers = offPeakAvgUsers;
+		/*this.peakAvgUsers = peakAvgUsers;
+		this.offPeakAvgUsers = offPeakAvgUsers;*/
 		this.perRequestDataSize = reqDataSize;
 		this.userGroupingFactor = userGroupingFactor;
 		
 		//Convert peak hrs to time in milliseconds from GMT
-		this.peakHours = new double[2];
+		/*this.peakHours = new double[2];
 		this.peakHours[0] = peakHours[0] * Constants.MILLI_SECONDS_TO_HOURS;
-		this.peakHours[1] = peakHours[1] * Constants.MILLI_SECONDS_TO_HOURS;
+		this.peakHours[1] = peakHours[1] * Constants.MILLI_SECONDS_TO_HOURS;*/
 		
 		this.currentRequests = Collections.synchronizedMap(new HashMap<Integer, Double>());
 						
@@ -94,6 +97,7 @@ public class UserBase extends CloudSim implements GeoLocatable {
 		hourlyResponseTimeStat = new HourlyStat(stat, Constants.HOURLY_RESPONSE_TIME, Sim_stat.INTERVAL_BASED);
 		set_stat(stat);		
 		
+		@SuppressWarnings("unused")
 		ResponseHandler responseHandler = new ResponseHandler(get_name() + "R");
 		
 		requestDelayDistribution = new Poisson("RequestDelayDistribution", STANDARD_POISSON_DIST_MEAN);
@@ -184,14 +188,25 @@ public class UserBase extends CloudSim implements GeoLocatable {
 	}
 
 	private int getOnlineUsers(double time) {
-		int avgUsers;
-		if ((time > peakHours[0]) && (time < peakHours[1])){
+		int avgUsers=0;
+		Extra myClass=new Extra();
+		double [][]aux=myClass.getLoad();
+		for (int i=0;i<24;i++){
+			if(time<aux[0][i]){
+				avgUsers=(int)aux[1][i];
+				return (int)(avgUsers * userCountDistribution.sample() / STANDARD_POISSON_DIST_MEAN);
+			}
+		}
+		
+		/*if ((time > peakHours[0]) && (time < peakHours[1])){
 			avgUsers = peakAvgUsers;
 		} else {
 			avgUsers = offPeakAvgUsers;
 		}
-		
-		return (int) (avgUsers * userCountDistribution.sample() / STANDARD_POISSON_DIST_MEAN);
+		nUsers++;
+		avgUsers=(int)(time/3600000);*/
+		//avgUsers*=avgUsers;
+		return 0;
 	}
 	
 	public int getRegion() {

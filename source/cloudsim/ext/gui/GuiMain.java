@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -38,6 +39,19 @@ import cloudsim.ext.gui.screens.InternetCharacteristicsScreen;
 import cloudsim.ext.gui.screens.ResultsScreen;
 import cloudsim.ext.gui.screens.SimulationPanel;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 /**
  * The main class of the GUI. Sets up the UI, and controls the screen transitions.
  * 
@@ -91,7 +105,9 @@ private static final String CMD_ABOUT = "About";
 		
 	}
 	
-	private void initUI(){		
+	private void initUI(){	
+		
+		
 		this.setTitle("Cloud Analyst");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(FRAME_SIZE);
@@ -251,10 +267,14 @@ private static final String CMD_ABOUT = "About";
 		btn.setMaximumSize(MENU_BUTTON_SIZE);
 		btn.setMinimumSize(MENU_BUTTON_SIZE);
 		btn.setPreferredSize(MENU_BUTTON_SIZE);
-		
+		btn.setFont(new java.awt.Font("Andale Mono",1,10));
+		btn.setFont(new java.awt.Font("Andale Mono",1,10));
+		btn.setFont(new java.awt.Font("Andale Mono",1,10));
+
 		btn.addActionListener(this);
 		
 		pnl.add(btn);
+		btn.setFont(new java.awt.Font("Andale Mono",1,10));
 		pnl.add(Box.createVerticalStrut(MENU_BTN_V_GAP));
 		
 	}

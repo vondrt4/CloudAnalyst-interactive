@@ -138,7 +138,37 @@ public class Simulation extends BaseCloudSimObservable implements Constants {
 											DEFAULT_PEAK_HOURS,
 											DEFAULT_PEAK_USERS,
 											DEFAULT_OFFPEAK_USERS));
-		simulationTime = 3600000.0;
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		simulationTime = Extra.getDuration();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 	}
 	
@@ -210,10 +240,10 @@ public class Simulation extends BaseCloudSimObservable implements Constants {
 		//Set the simulation duration
 		Sim_system.set_termination_condition(Sim_system.TIME_ELAPSED, simulationTime, false);
 		
+		
 		//Start the simulation
 		GridSim.startGridSimulation();
 		
-
 		// Comes here when the simulation has completed.
 		// Gather the results and package them for the results screen
 		results = new HashMap<String, Object>();
