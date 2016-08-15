@@ -1,5 +1,10 @@
 package cloudsim.ext;
 
+/**
+ * This class implements a table of loads that the UserBase will offer every hour.
+ * @author Juan
+ *
+ */
 public class Extra {
 	private double[][] load;
 	private static double duration=24*3600000.0;
@@ -10,8 +15,9 @@ public class Extra {
 		load= new double[2][250];
 		for (int i=0;i<250;i++){
 			load[0][i] = i* Constants.MILLI_SECONDS_TO_HOURS;
-			load[1][i]=2000;
+			load[1][i]=1012;
 		}
+/*
 		load[1][0]=1000;
 		load[1][1]=1200;
 		load[1][2]=1000;
@@ -38,9 +44,7 @@ public class Extra {
 		load[1][23]=800;
 		load[1][24]=1200;
 		load[1][25]=1000;
-		
-		
-		
+*/
 	}
 
 	public double[][] getLoad() {//For UserBase.getOnlineUsers

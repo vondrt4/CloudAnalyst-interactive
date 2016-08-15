@@ -28,6 +28,7 @@ import cloudsim.ext.Extra;
 import cloudsim.ext.GeoLocatable;
 import cloudsim.ext.InternetCharacteristics;
 import cloudsim.ext.InternetCloudlet;
+import cloudsim.ext.datacenter.VirtualMachineState;
 import cloudsim.ext.event.CloudSimEvent;
 import cloudsim.ext.event.CloudSimEventListener;
 import cloudsim.ext.event.CloudSimEvents;
@@ -51,9 +52,7 @@ import gridsim.GridSimTags;
  * @author Bhathiya Wickremasinghe
  *
  */
-public class DatacenterController extends DatacenterBroker implements GeoLocatable,
-CloudsimObservable,
-Constants {
+public class DatacenterController extends DatacenterBroker implements GeoLocatable,CloudsimObservable,Constants {
 
 
 	private List<CloudSimEventListener> listeners;
@@ -96,10 +95,11 @@ Constants {
 		this.requestsPerCloudlet = requestsPerCloudlet;
 
 		InternetCharacteristics.getInstance().addEntity(this);
-
+//http://www.dcs.ed.ac.uk/home/simjava/doc/eduni/simjava/Sim_stat.html
 		stat = new Sim_stat();
 		stat.add_measure(DC_SERVICE_TIME, Sim_stat.INTERVAL_BASED);
-
+//Wondra measure throughput to calculate utilization
+		stat.add_measure("Throughput", Sim_stat.RATE_BASED);
 		hourlyProcessingTimes = new HourlyStat(stat, "Overloading status : " + get_name(), Sim_stat.INTERVAL_BASED);
 		set_stat(stat);	
 
@@ -151,15 +151,18 @@ Constants {
 		Sim_event ev = new Sim_event();
 
 
-
-		int totalMeasures=25*20;//each 5 mins, using 25 hours
-		double granularity=0.05; //also 5 minutes
-		int cont =0;
-		double[] measures=new double[totalMeasures];
-		int[] checked= new int[totalMeasures];
-		for (int i=0;i<totalMeasures;i++){
-			checked[i]=0;
-		}
+//Wondra measure latency and throughput every 5 minutes to support the autoscaler.
+		int totalMeasures=24*20;//each 5 mins, using 24 hours
+		double granularity=5.0/60.0; //also 5 minutes
+		int lastDeletedAt=0;
+/* Juan's ugly hack
+		//double[] measures=new double[totalMeasures];
+		//int[] checked= new int[totalMeasures];
+		//for (int i=0;i<totalMeasures;i++){
+		//	checked[i]=0;
+		//} */
+		
+		int cont=0;
 		while(Sim_system.running()){
 			super.sim_get_next(ev);
 			cont++;
@@ -167,12 +170,12 @@ Constants {
 
 			if (cont%200==0){
 				System.out.print((int)(currTime/60000)+" m\n");
-
 			}
-
+			
+/* Juan's ugly hack
 			if(checked[(int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS))]==0){
 
-				@SuppressWarnings("rawtypes")
+				
 				List res = stat.get_measures();
 				//int hora=0;
 				for (Object o : res) {
@@ -181,19 +184,33 @@ Constants {
 					//DecimalFormat decimales = new DecimalFormat("0.0");
 					if(stat.average(measure)!=0){
 						//System.out.print(hora+".00 - "+(hora+1)+".00 -> Average: "+decimales.format(stat.average(measure))+"\tMinimum: "+decimales.format(stat.minimum(measure))+"\tMaximum: "+decimales.format(stat.maximum(measure))+"\n");
-						measures[(int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS))]=stat.average(measure);
+				        measures[(int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS))]=stat.average(measure);
 					}
 					//hora++;
-				}
+				//}
+			*/	
+			
+//Juan's ugly hack - this is to add or remove VMs at certain time points
 				/*if (checked[50]==1&&checked[51]==0)
 					addVMs(10);
 				if (checked[54]==1&&checked[55]==0)
 					removeVMs(10);*/
-				tresholdFunction(measures, (int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS)));
+				
+//Wondra delete one VM every 15 minutes
+				if ((int) Math.floor(currTime/60000/15)>lastDeletedAt){
+					removeVMs(1);
+					lastDeletedAt=(int) Math.floor(currTime/60000/15);
+				}
+				
+//Wondra TODO autoscaling
+				//double currLatency=stat.average(DC_SERVICE_TIME, currTime-granularity*Constants.MILLI_SECONDS_TO_HOURS, currTime);
+				//double currThroughput=stat.count("Throughput", currTime-granularity*Constants.MILLI_SECONDS_TO_HOURS, currTime);
+				//double currUtilization=currLatency*currThroughput;
+				//thresholdFunction(measures, (int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS)));
 
-
-				checked[(int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS))]=1;
-			}
+//Juan's ugly hack 
+				//checked[(int)(currTime/(granularity*Constants.MILLI_SECONDS_TO_HOURS))]=1;
+			//}
 
 			// if the simulation finishes then exit the loop
 			if (ev.get_tag() == GridSimTags.END_OF_SIMULATION){
@@ -204,14 +221,19 @@ Constants {
 			// process the received event
 			processEvent(ev);
 		}
-
+		
+//Wondra print the finer statistics to the terminal
+		System.out.print("Datacenter service times (5min avg) and 5 min event counts in "+get_name()+":\n");
 		for(int i=0;i<totalMeasures;i++){
-			System.out.print(i+" "+measures[i]+"\n");
+			System.out.print(i*5+" "+
+					stat.average(DC_SERVICE_TIME, i*granularity*Constants.MILLI_SECONDS_TO_HOURS, ((i+1)*granularity*Constants.MILLI_SECONDS_TO_HOURS)-1)+" "+
+					stat.count("Throughput", i*granularity*Constants.MILLI_SECONDS_TO_HOURS, ((i+1)*granularity*Constants.MILLI_SECONDS_TO_HOURS)-1)+"\n");
 		}
 
 		System.out.println(get_name() + " finalizing, submitted cloudlets=" + cloudletsSubmitted 
 				+ " processing cloudlets=" + processingCloudletStatuses.size() + " ,allRequestsProcessed=" + allRequestsProcessed);
-	
+
+//Juan measure the costs while observing the number of VM turned off.	
 		double totalTime=Extra.getDuration();//24*60*60*1000.0;
 		totalTime*=myDestroyedVMs;
 		double totalSavedTime= totalTime-mySavedTime;
@@ -219,10 +241,17 @@ Constants {
 		
 	}//body
 
-	private void tresholdFunction(double[] measures, int currentPos){
+	/**
+	 * This function implements a latency-based autoscaler.
+	 * @param measures Array of latencies by 5 minutes
+	 * @param currentPos Index to the array
+	 * @pre $none
+	 * @author Juan
+	 */
+	private void thresholdFunction(double[] measures, int currentPos){
 		boolean analise=true;
 		double count=0;
-		int number =4;
+		int number =4; //TODO result of the ugly hack
 		for(int i=currentPos;i>Math.max(currentPos-number,1);i--){
 			if(measures[i]==0){
 				analise=false;
@@ -303,6 +332,8 @@ Constants {
 			send("Internet", 0.0, Constants.RESPONSE_INTERNET_CLOUDLET_TAG, responseCloudlet);
 
 			stat.update(DC_SERVICE_TIME, startTime, endTime);
+//Wondra mesure throughput to calculate utilization
+			stat.update("Throughput", endTime);
 			hourlyProcessingTimes.update(startTime, endTime);
 
 			//System.out.println(endTime + ": DC processing time for " + parentRequest + "=" + thisProcessingTime + " in vm " + cl.getVmId() + " and current processingqueue=" + processingCloudletStatuses.size());
@@ -407,6 +438,7 @@ Constants {
 
 		int nextAvailVM = loadBalancer.getNextAvailableVm();
 
+//Juan avoid VMs that have been deleted
 		while(vmMapping[nextAvailVM]==-10){
 			nextAvailVM = loadBalancer.getNextAvailableVm();
 		}

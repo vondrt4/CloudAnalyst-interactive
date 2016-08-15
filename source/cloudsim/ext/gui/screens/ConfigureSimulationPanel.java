@@ -414,7 +414,7 @@ public class ConfigureSimulationPanel extends JPanel
 		compW = 240;
 		compH = 30;
 		JLabel lblInstructionLength = new JLabel("<html>Executable instruction length per request:" +
-				                                  "<br/>(bytes)</html>");
+				                                  "<br/>(100k instructions)</html>");
 		lblInstructionLength.setFont(new Font("Serif", Font.PLAIN, 10));
 		lblInstructionLength.setBounds(x, y, compW, compH);
 		advancedTab.add(lblInstructionLength);
@@ -423,22 +423,8 @@ public class ConfigureSimulationPanel extends JPanel
 		compW = 80;
 		compH = 20;
 		
-		
-		
-		
-		
-		
-		
-		txtInstructionLength = new JTextField("" + (simulation.getInstructionLengthPerRequest()*10));
-		
-		
-		
-		
-		
-		
-		
-		
-		
+//Juan populate the instruction length field
+		txtInstructionLength = new JTextField("" + simulation.getInstructionLengthPerRequest());
 		
 		txtInstructionLength.setBounds(x, y, compW, compH);
 		advancedTab.add(txtInstructionLength);

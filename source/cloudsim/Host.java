@@ -134,16 +134,12 @@ public class Host extends Machine {
 		VirtualMachine newVm = new VirtualMachine(vm);
 		vmList.add(newVm);
 					
-		
-		
+//Juan debug output
 		/*
 			System.out.print("Current vm list in "+this+":\n");
 			for(int i=0;i<vmList.size();i++)
 				System.out.print(vmList.get(i)+"\n");
 		*/
-		
-		
-		
 		
 		return true;
 	}
@@ -155,6 +151,7 @@ public class Host extends Machine {
 	 * @post $none
 	 */
 	public synchronized void vmDestroy(int vmID, int userID){
+//Juan debug output
 		/*
 		System.out.print("Current vm list in "+this+":\n");
 		for(int i=0;i<vmList.size();i++)
@@ -252,6 +249,7 @@ public class Host extends Machine {
 			double time = vm.getVMScheduler().updateVMProcessing(currentTime,allocationPolicy.getMIPSShare(vm.getVmId(),vm.getUserId()));
 			if(time>0.0&&time<smallerTime) smallerTime=time;
 		}
+//Juan debug output
 		//System.out.print(this+" processing, time "+smallerTime+"\n");
 		return smallerTime;
 	}

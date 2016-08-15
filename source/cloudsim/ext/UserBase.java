@@ -38,6 +38,7 @@ public class UserBase extends CloudSim implements GeoLocatable {
 	private int responsesReceived = 0;
 	private boolean cancelled = false;
 	private int requestsPerUserPerHour;
+//Juan made obsolete by Extra.java
 	/*private double[] peakHours;
 	private int peakAvgUsers;
 	private int offPeakAvgUsers;*/
@@ -78,11 +79,12 @@ public class UserBase extends CloudSim implements GeoLocatable {
 		this.region = region;
 		this.instructionLengthPerRequest = instructionLengthPerRequest;
 		this.requestsPerUserPerHour = requestsPerUserPerHour;
+//Juan made obsolete by Extra.java
 		/*this.peakAvgUsers = peakAvgUsers;
 		this.offPeakAvgUsers = offPeakAvgUsers;*/
 		this.perRequestDataSize = reqDataSize;
 		this.userGroupingFactor = userGroupingFactor;
-		
+//Juan made obsolete by Extra.java		
 		//Convert peak hrs to time in milliseconds from GMT
 		/*this.peakHours = new double[2];
 		this.peakHours[0] = peakHours[0] * Constants.MILLI_SECONDS_TO_HOURS;
@@ -97,7 +99,7 @@ public class UserBase extends CloudSim implements GeoLocatable {
 		hourlyResponseTimeStat = new HourlyStat(stat, Constants.HOURLY_RESPONSE_TIME, Sim_stat.INTERVAL_BASED);
 		set_stat(stat);		
 		
-		@SuppressWarnings("unused")
+
 		ResponseHandler responseHandler = new ResponseHandler(get_name() + "R");
 		
 		requestDelayDistribution = new Poisson("RequestDelayDistribution", STANDARD_POISSON_DIST_MEAN);
@@ -187,6 +189,12 @@ public class UserBase extends CloudSim implements GeoLocatable {
 		return userCount / userGroupingFactor;
 	}
 
+	/**
+	 * This function returns an element from the array in Extra.java
+	 * @param time which data point to return
+	 * @pre time != null
+	 * @author Juan
+	 */
 	private int getOnlineUsers(double time) {
 		int avgUsers=0;
 		Extra myClass=new Extra();

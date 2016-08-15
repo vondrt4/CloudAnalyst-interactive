@@ -10,7 +10,7 @@
      <double>100.0</double> 
     </void> 
     <void index="2"> 
-     <double>150.0</double> 
+     <double>0.25</double> 
     </void> 
     <void index="3"> 
      <double>250.0</double> 
@@ -48,7 +48,7 @@
   <void index="2"> 
    <array class="double" length="6"> 
     <void index="0"> 
-     <double>150.0</double> 
+     <double>0.25</double> 
     </void> 
     <void index="1"> 
      <double>250.0</double> 

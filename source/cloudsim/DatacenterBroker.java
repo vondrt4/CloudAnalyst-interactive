@@ -50,7 +50,7 @@ public class DatacenterBroker extends CloudSim {
 	protected int[] vmMapping;
 	protected DatacenterCharacteristics[] datacenterChar;
 	protected boolean[] clSubmitted;
-	
+//Juan to correct reported time and money when terminating VMs at runtime
 	protected int myDestroyedVMs=0;
 	protected double mySavedTime=0;
 
@@ -65,7 +65,6 @@ public class DatacenterBroker extends CloudSim {
 	 */
 	public DatacenterBroker(String name) throws Exception {
 		super(name);
-		//java.util.List list=  Collections.synchronizedList(new VirtualMachineList());
 		this.vmlist=new VirtualMachineList();
 		this.cllist=new CloudletList();
 		this.receiveList=new CloudletList();
@@ -86,6 +85,7 @@ public class DatacenterBroker extends CloudSim {
 	 */
 	@SuppressWarnings("unchecked")
 	public void submitVMList(VirtualMachineList list){		
+//Juan debug output
 		System.out.println(list == vmlist);
 		System.out.print(Thread.currentThread().getName() +" inside submitting "+"\n");
 
@@ -100,6 +100,12 @@ public class DatacenterBroker extends CloudSim {
 		for(int i=0;i<vmMapping.length;i++) vmMapping[i]=-1;
 	}
 
+	/**
+	 * This method creates VMs at runtime. The VM parameters are hardcoded in the function. VMs are created in the first datacenter.
+	 * @param number number of VMs to create
+	 * @pre number !=null
+	 * @author Juan
+	 */
 	public void addVMs(int number){
 
 		long size = 10000; //image size (MB)
@@ -129,24 +135,20 @@ public class DatacenterBroker extends CloudSim {
 
 		for(int i=actual;i<this.vmlist.size();i++){
 			int[] array = new int[3];
-			array[0]=5;
+			array[0]=5; //This happens to be the ID of the DataCenterBroker
 			array[1]=i;
-			array[2]=1;
+			array[2]=1; //tag to discern request and acknowledgement
 			processMyVMCreate(array);
 		}
 
 	}
 
-	/*protected void removeVMs2(int number) {
-		int size=0;
-		for (int i=0;i<this.vmlist.size();i++){
-			if(this.vmMapping[i]!=-10)
-				size++;
-		}
-		clearDatacenters();
-		this.addVMs(size-number);
-	}*/
-
+	/**
+	 * This method deletes VMs at runtime.
+	 * @param number number of VMs to delete
+	 * @pre number !=null
+	 * @author Juan
+	 */
 	protected void removeVMs(int number) {
 		System.out.print(GridSim.clock()+": "+this.get_name()+ ": Trying to remove "+number+" VMs.\n");
 		
@@ -178,12 +180,24 @@ public class DatacenterBroker extends CloudSim {
 			System.out.print(GridSim.clock()+": "+this.get_name()+ ": Error, not all the destructions of VMs have been succeed.\n");
 	}
 
+	/**
+	 * This is a cut version of processResourceCharacteristics that creates VMs in the first Datacenter.
+	 * @param characteristics DatacenterCharacteristics
+	 * @pre characteristics !=null
+	 * @author Juan
+	 */
 	protected void processMyResourceCharacteristics(DatacenterCharacteristics characteristics) {	
 		if(this.contactedDatacenters==this.datacenters){
 			createVMsinDatacenter(0);
 		}
 	}
-	
+
+	/**
+	 * This is a modified version of processVMCreate, which services VM create acknowledgements. This one is called directly.  
+	 * @param array contains senderID, vmId, tag
+	 * @pre array !=null
+	 * @author Juan
+	 */	
 	protected void processMyVMCreate(int[] array) {
 		//int[] array;/* = (int[]) ev.get_data();*/
 		int senderId=array[0];
@@ -306,6 +320,7 @@ public class DatacenterBroker extends CloudSim {
 
 			// if the simulation finishes then exit the loop
 			if (ev.get_tag() == GridSimTags.END_OF_SIMULATION){
+//Juan debug output				
 				System.out.print("+++Ending message has arrived to DCbroker+++");
 				break;
 			}
@@ -490,6 +505,12 @@ public class DatacenterBroker extends CloudSim {
 		this.vmsAcks=0;
 	}
 
+	/**
+	 * Delete virtual machines in a datacenter
+	 * @param chosenDatacenter
+	 * @pre chosenDatacenter !=null
+	 * @author Juan
+	 */	
 	protected void deleteVMsinDatacenter(int chosenDatacenter) {
 
 		System.out.println(GridSim.clock()+": "+this.get_name()+ ": Trying to Delete VM #"+((VirtualMachine)vmlist.get(this.vmlist.size()-1)).getVmId());
@@ -584,6 +605,10 @@ public class DatacenterBroker extends CloudSim {
 		return null;	
 	}
 
+	/**
+	 * Used to debug the CloudletList
+	 * @author Juan
+	 */	
 	protected void PrintCloudletList(){
 		//System.out.print("Current cloudlet list:\n");
 		for(int i=0;i<cllist.size();i++)

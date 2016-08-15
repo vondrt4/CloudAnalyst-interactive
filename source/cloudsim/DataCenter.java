@@ -150,6 +150,7 @@ public class DataCenter extends CloudSim {
             
             // if the simulation finishes then exit the loop
             if (ev.get_tag() == GridSimTags.END_OF_SIMULATION){
+//Juan debug output
             	System.out.print("+++Ending message has arrived to a DC+++");
             	break;
             }

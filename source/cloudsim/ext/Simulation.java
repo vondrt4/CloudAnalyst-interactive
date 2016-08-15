@@ -138,38 +138,9 @@ public class Simulation extends BaseCloudSimObservable implements Constants {
 											DEFAULT_PEAK_HOURS,
 											DEFAULT_PEAK_USERS,
 											DEFAULT_OFFPEAK_USERS));
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+//Juan tried to increase simulation length
+      //simulationTime = 3600000.0;
 		simulationTime = Extra.getDuration();
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	}
 	
 	/**
@@ -277,7 +248,9 @@ public class Simulation extends BaseCloudSimObservable implements Constants {
 			for (Object o : res) {
 				Object[] oArray = (Object[]) o;
 				String measure = (String) oArray[0];
-
+//Wondra skip rate-based measures
+				if (measure.startsWith("Throughput")) 
+					continue;
 				SimMeasure m = new SimMeasure();
 				m.setName(measure);
 				m.setEntityName(dcName);

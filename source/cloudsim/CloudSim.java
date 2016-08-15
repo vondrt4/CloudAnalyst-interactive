@@ -64,7 +64,7 @@ public class CloudSim extends GridSimCore {
         if(destID!=srcID){//does not delay self messages
         	delay+=getNetworkDelay(srcID,destID);
         }
-
+//Juan debug output
         printMessage(destID, delay, gridSimTag, null, null,"*No_entity*");
         super.sim_schedule(destID, delay, gridSimTag);
     }
@@ -91,6 +91,7 @@ public class CloudSim extends GridSimCore {
         if(destID!=srcID){//does not delay self messages
         	delay+=getNetworkDelay(srcID,destID);
         }
+//Juan debug output
         printMessage(destID, delay, gridSimTag, data, null,"*No_entity*");
         super.sim_schedule(destID, delay, gridSimTag, data);
     }
@@ -126,7 +127,7 @@ public class CloudSim extends GridSimCore {
             System.out.println(super.get_name() + ".send(): Error - invalid entity name \"" + entityName + "\".");
             return;
         }
-
+//Juan debug output
     	printMessage(destID, delay, gridSimTag, null, null,entityName);
     	this.send(destID, delay, gridSimTag);
     }
@@ -143,6 +144,7 @@ public class CloudSim extends GridSimCore {
             System.out.println(super.get_name() + ".send(): Error - invalid entity name \"" + entityName + "\".");
             return;
         }
+//Juan debug output
     	printMessage(destID, delay, gridSimTag, data, null, entityName);
     	this.send(destID, delay, gridSimTag, data);
     }
@@ -151,6 +153,7 @@ public class CloudSim extends GridSimCore {
      * @deprecated As in CloudSim Sim_ports are not used by CloudSim entities
      */ 
     protected void send(Sim_port destPort, double delay, int gridSimTag) {
+//Juan debug output
     	printMessage(999999999, delay, gridSimTag, null, destPort,"*No_entity*");
     	this.send(this.get_id(),delay,gridSimTag);
     }        
@@ -162,10 +165,19 @@ public class CloudSim extends GridSimCore {
     	
     	int destID = ((IO_data) data).getDestID();
     	Object message = ((IO_data)data).getData();
+//Juan debug output
     	printMessage(destID, delay, gridSimTag, data, null,"*No_entity*");
     	this.send(destID,delay,gridSimTag,message);
     }
-    
+
+	/**
+	 * Prints out messages sent or received during the simulation.
+	 * @param destID ID of the entity receiving the message
+	 * @param delay time, from the current simulation time, to deliver the message
+	 * 			Delay due to the latency is added to this time.
+	 * @param gridSimTag tag of the message
+	 * @author Juan
+	 */ 
     protected void printMessage(int destID, double delay, int gridSimTag, Object data,Sim_port destPort,String entityName){
     	Object message;
     	try{
